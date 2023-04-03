@@ -1,10 +1,12 @@
 // ignore_for_file: camel_case_types
 import 'package:flutter/material.dart';
+
 import 'bottom.dart';
 
 void main() {
+  ThemeData Themdata = ThemeData(brightness: Brightness.dark);
   runApp(MaterialApp(
-    theme: ThemeData(brightness: Brightness.dark),
+    theme: Themdata,
     debugShowCheckedModeBanner: false,
     home: const Home_Screen(),
     title: 'ToDo',
@@ -38,17 +40,22 @@ class _Home_ScreenState extends State<Home_Screen> {
                 color: Colors.black,
                 thickness: 1,
               ),
-              buildbottom(Icons.settings, 'Settings', () {
-                setState(
-                  () {},
-                );
-              }),
-              buildbottom(Icons.info, 'info', () {})
+              buildbottom(Icons.settings, 'Settings', () {}),
+              buildbottom(Icons.info, 'info', () {
+                showAboutDialog(
+                    context: context,
+                    applicationName: 'ToDo',
+                    children: [
+                      Text(
+                          'This is a simple todo application with the functions adding work,marking the work and deleting them. ')
+                    ]);
+              })
             ],
           ),
         ),
       ),
       appBar: AppBar(
+        backgroundColor: Colors.red,
         title: const Text(
           "ToDoList",
           style: TextStyle(color: Colors.black, fontSize: 25),
