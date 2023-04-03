@@ -1,6 +1,5 @@
 // ignore_for_file: camel_case_types
 import 'package:flutter/material.dart';
-import 'package:flutter/services.dart';
 import 'bottom.dart';
 
 void main() {
@@ -40,13 +39,11 @@ class _Home_ScreenState extends State<Home_Screen> {
                 thickness: 1,
               ),
               buildbottom(Icons.settings, 'Settings', () {
-                setState(() {});
+                setState(
+                  () {},
+                );
               }),
-              buildbottom(Icons.exit_to_app_sharp, 'Exit', (
-                  {bool? animated}) async {
-                await SystemChannels.platform
-                    .invokeListMethod<void>('SystemNavigator.pop', animated);
-              }),
+              buildbottom(Icons.info, 'info', () {})
             ],
           ),
         ),
@@ -81,7 +78,7 @@ class _Home_ScreenState extends State<Home_Screen> {
                         );
                       },
                       title: Text(
-                        listController == '' ? 'no value' : todo[index],
+                        todo[index],
                         style: TextStyle(
                             decoration: select.contains(index)
                                 ? TextDecoration.lineThrough
@@ -119,41 +116,68 @@ class _Home_ScreenState extends State<Home_Screen> {
               mainAxisAlignment: MainAxisAlignment.end,
               children: [
                 FloatingActionButton(
-                  backgroundColor: Colors.green,
+                  backgroundColor: Colors.redAccent,
                   onPressed: () {
-                    if (_formKey.currentState!.validate())
-                      setState(
-                        () {
-                          todo.add(listController.text.toString());
-                          ++index;
-                          listController.clear();
-                        },
-                      );
+                    showDialog(
+                        context: context,
+                        builder: (BuildContext context) {
+                          return AlertDialog(
+                            content: Form(
+                              key: _formKey,
+                              child: Padding(
+                                padding: const EdgeInsets.only(
+                                    bottom: 0, left: 10, right: 10),
+                                child: TextFormField(
+                                  maxLines: null,
+                                  keyboardType: TextInputType.multiline,
+                                  controller: listController,
+                                  decoration: InputDecoration(
+                                    hintText: 'Add your work',
+                                    border: OutlineInputBorder(
+                                      borderRadius: BorderRadius.circular(6),
+                                    ),
+                                  ),
+                                  validator: (value) {
+                                    if (value == null || value.isEmpty) {
+                                      return 'Please Enter Some Text';
+                                    }
+                                    return null;
+                                  },
+                                ),
+                              ),
+                            ),
+                            actions: [
+                              TextButton(
+                                onPressed: () => Navigator.pop(context),
+                                child: Text(
+                                  'cancel',
+                                  style: TextStyle(color: Colors.red),
+                                ),
+                              ),
+                              TextButton(
+                                onPressed: () {
+                                  if (_formKey.currentState!.validate())
+                                    setState(
+                                      () {
+                                        todo.add(
+                                            listController.text.toString());
+                                        ++index;
+                                        listController.clear();
+                                      },
+                                    );
+                                },
+                                child: Text(
+                                  'Add',
+                                  style: TextStyle(color: Colors.green),
+                                ),
+                              ),
+                            ],
+                          );
+                        });
                   },
                   child: const Icon(Icons.add),
                 ),
               ],
-            ),
-          ),
-          Form(
-            key: _formKey,
-            child: Padding(
-              padding: const EdgeInsets.only(bottom: 60, left: 10, right: 10),
-              child: TextFormField(
-                controller: listController,
-                decoration: InputDecoration(
-                  hintText: 'Add your work',
-                  border: OutlineInputBorder(
-                    borderRadius: BorderRadius.circular(6),
-                  ),
-                ),
-                validator: (value) {
-                  if (value == null || value.isEmpty) {
-                    return 'Please Enter Some Text';
-                  }
-                  return null;
-                },
-              ),
             ),
           ),
         ],
